@@ -9,6 +9,8 @@ var numberStatus = false;
 var numberStatusCheck;
 var specialCharStatus = false;
 var specialCharStatusCheck;
+var typesCount;
+var typesArr;
 
 
 function errorPrompt() {
@@ -30,7 +32,33 @@ function onlyDigits(val) {
   return isnum;
 }
 
-function userPrompts() {
+function getRandomLowerCase() {
+  return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+}
+
+function getRandomUpperCase() {
+  return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+}
+
+function getRandomNumber() {
+  return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+}
+
+function getRandomSpecial() {
+  const special = '`~!@#$%^&*()-_=+{}[];:<>,.?/';
+  return special[Math.floor(Math.random() * special.length)];
+}
+
+const randomFunc = {
+  lowercase: getRandomLowerCase,
+  uppercase: getRandomLowerCase,
+  number: getRandomNumber,
+  special: getRandomSpecial
+}
+
+function generatePassword() {
+  var generatedPassword = 'test';
+
   passwordLength = prompt("Enter a length for your password [8 - 128]");
   while (passwordLengthOK === false) { 
     var isDigit = onlyDigits(passwordLength);
@@ -46,8 +74,7 @@ function userPrompts() {
     while (validateUserChoice(lowercaseStatusCheck) === false) {
       lowercaseStatusCheck = prompt("Would you like your password to contain lowercase letters? Enter YES or NO.");
         if (lowercaseStatusCheck === 'YES' || lowercaseStatusCheck === 'yes') {
-          return lowercaseStatus = true;
-          
+          lowercaseStatus = true;
           break;
         } else if (lowercaseStatusCheck === 'NO' || lowercaseStatusCheck === 'no') {
           lowercaseStatus = false;
@@ -64,7 +91,7 @@ function userPrompts() {
         uppercaseStatus = true;
         break;
       } else if (uppercaseStatusCheck === 'NO' || uppercaseStatusCheck === 'no') {
-        lowercaseStatus = false;
+        uppercaseStatus = false;
         break;  
       } else {
         errorPrompt();
@@ -91,7 +118,6 @@ function userPrompts() {
     specialCharStatusCheck = prompt("Would you like your password to contain lowercase letters? Enter YES or NO.");
       if (specialCharStatusCheck === 'YES' || specialCharStatusCheck === 'yes') {
         specialCharStatus = true;
-       
         break;
       } else if (specialCharStatusCheck === 'NO' || specialCharStatusCheck === 'no') {
         specialCharStatus = false;
@@ -102,55 +128,24 @@ function userPrompts() {
   }
   console.log(specialCharStatus);
 
-}
+  typesCount = lowercaseStatus + uppercaseStatus + numberStatus + specialCharStatus;
+  typesArr = [{lowercaseStatus}, {uppercaseStatus}, {numberStatus}, {specialCharStatus}].filter(item => Object.values(item)[0])
+  console.log(typesCount)
 
-console.log(lowercaseStatus)
+  if (typesCount === 0) {
+    return '';
+  }
 
-function getRandomLowerCase() {
-  return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
-}
+  for (let i = 0; i < passwordLength; i += typesCount) {
+    typesArr.forEach(type => {
+      const funcName = Object.keys(type)[0];
 
-function getRandomUpperCase() {
-  return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
-}
+      generatedPassword += randomFunc[funcName]();
+    });
+  }
 
-function getRandomNumber() {
-  return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
-}
+  console.log(generatedPassword);
 
-function getRandomSpecial() {
-  const special = '`~!@#$%^&*()-_=+{}[];:<>,.?/';
-  return special[Math.floor(Math.random() * special.length)];
-}
-
-const randomFunc = {
-  lowercase: getRandomLowerCase,
-  uppercase: getRandomLowerCase,
-  number: getRandomNumber,
-  special: getRandomSpecial
-}
-
-function generatePassword(lowercaseStatus, uppercaseStatus, numberStatus, specialCharStatus, length) {
-  userPrompts();
-
- lowercaseStatus = lowercaseStatus;   
-  const typesCount = lowercaseStatus + uppercaseStatus + numberStatus + specialCharStatus;
-
-  console.log('typesCount:', typesCount);
-
-  console.log(lowercaseStatus);
-
-
-  var generatedPassword = '';
-
-
-
-
- 
-
-
-
-  
 
   // 4. Display generated password to page.
   return generatedPassword;

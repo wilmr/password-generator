@@ -7,7 +7,7 @@ A website that lets to generate a random password depending on chosen attributes
 ## Built With
 * HTML
 * CSS
-* JavaScipt
+* JavaScript
 
 ## Website
 https://wilmr.github.io/password-generator/

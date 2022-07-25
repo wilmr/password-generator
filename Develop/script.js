@@ -12,10 +12,13 @@ var specialCharStatusCheck;
 var typesCount;
 var typesArr;
 
+// displays error alert to screen
 
 function errorPrompt() {
   window.alert("Please enter a valid input.")
 }
+
+// validated user input for prompts
 
 function validateUserChoice(userChoice) {
   if (userChoice !== 'yes' && userChoice !== 'YES' && userChoice !== 'no' && userChoice !== 'NO') {
@@ -26,11 +29,14 @@ function validateUserChoice(userChoice) {
 
 // onlyDigits Function from StackOverflow user Scott Evevrden
 // https://stackoverflow.com/questions/1779013/check-if-string-contains-only-digits 
+// will check if user input is only a digit and not a string
 
 function onlyDigits(val) {
   let isnum = /^\d+$/.test(val);
   return isnum;
 }
+
+//using fromCharCode to randomize password attributes
 
 function getRandomLowerCase() {
   return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
@@ -45,19 +51,27 @@ function getRandomNumber() {
 }
 
 function getRandomSpecial() {
-  const special = '`~!@#$%^&*()-_=+{}[];:<>,.?/';
+  const special = '~!@#$%^&*()-_=+{}[];:<>,.?/';
   return special[Math.floor(Math.random() * special.length)];
 }
 
-const randomFunc = {
-  lowercase: getRandomLowerCase,
-  uppercase: getRandomLowerCase,
-  number: getRandomNumber,
-  special: getRandomSpecial
-}
+
 
 function generatePassword() {
-  var generatedPassword = 'test';
+
+  // key pair object to will get overwritten with random values everytime generatePassword() is called.
+  const randomFunc = {
+    lowercaseStatus: getRandomLowerCase,
+    uppercaseStatus: getRandomUpperCase,
+    numberStatus: getRandomNumber,
+    specialCharStatus: getRandomSpecial
+  }
+
+  //initialized password to empty string
+  var generatedPassword = '';
+
+
+  //beginning of prompts
 
   passwordLength = prompt("Enter a length for your password [8 - 128]");
   while (passwordLengthOK === false) { 
@@ -83,10 +97,10 @@ function generatePassword() {
           errorPrompt();
         }
     }
-    console.log(lowercaseStatus);
+   // console.log(lowercaseStatus);
 
   while (validateUserChoice(uppercaseStatusCheck) === false) {
-    uppercaseStatusCheck = prompt("Would you like your password to contain lowercase letters? Enter YES or NO.");
+    uppercaseStatusCheck = prompt("Would you like your password to contain uppercase letters? Enter YES or NO.");
       if (uppercaseStatusCheck === 'YES' || uppercaseStatusCheck === 'yes') {
         uppercaseStatus = true;
         break;
@@ -97,10 +111,10 @@ function generatePassword() {
         errorPrompt();
       }
     }
-  console.log(uppercaseStatus);
+  //console.log(uppercaseStatus);
 
   while (validateUserChoice(numberStatusCheck) === false) {
-    numberStatusCheck = prompt("Would you like your password to contain lowercase letters? Enter YES or NO.");
+    numberStatusCheck = prompt("Would you like your password to contain numbers? Enter YES or NO.");
       if (numberStatusCheck === 'YES' || numberStatusCheck === 'yes') {
         numberStatus = true;
         break;
@@ -112,10 +126,10 @@ function generatePassword() {
       }
   }
 
-  console.log(numberStatus);
+  //console.log(numberStatus);
 
   while (validateUserChoice(specialCharStatusCheck) === false) {
-    specialCharStatusCheck = prompt("Would you like your password to contain lowercase letters? Enter YES or NO.");
+    specialCharStatusCheck = prompt("Would you like your password to contain special characters? Enter YES or NO.");
       if (specialCharStatusCheck === 'YES' || specialCharStatusCheck === 'yes') {
         specialCharStatus = true;
         break;
@@ -126,30 +140,39 @@ function generatePassword() {
         errorPrompt();
       }
   }
-  console.log(specialCharStatus);
+ // console.log(specialCharStatus);
 
+ // END of prompts
+
+ // count the number of attributes that are true
   typesCount = lowercaseStatus + uppercaseStatus + numberStatus + specialCharStatus;
-  typesArr = [{lowercaseStatus}, {uppercaseStatus}, {numberStatus}, {specialCharStatus}].filter(item => Object.values(item)[0])
-  console.log(typesCount)
 
+ // array of only TRUE attributes
+  typesArr = [{lowercaseStatus}, {uppercaseStatus}, {numberStatus}, {specialCharStatus}].filter(item => Object.values(item)[0])
+ // console.log(typesCount)
+
+ // if user doesn't select any attributes besides length, then array will return empty
   if (typesCount === 0) {
     return '';
   }
 
-  for (let i = 0; i < passwordLength; i += typesCount) {
-    typesArr.forEach(type => {
-      const funcName = Object.keys(type)[0];
+// loop through user input length
 
-      generatedPassword += randomFunc[funcName]();
-    });
-  }
-
-  console.log(generatedPassword);
+  for(let i=0; i<passwordLength; i+=typesCount) {
+    // for each "type" in typesArr
+    // append to generatedPassword with its value pair of the associated type.
+		typesArr.forEach(type => {
+			const funcName = Object.keys(type)[0];
+			generatedPassword += randomFunc[funcName]();
+		});
+	}
 
 
   // 4. Display generated password to page.
-  return generatedPassword;
+  // .slice is used here to slice keep true user input length even if user choice is a length of 1 < 4 
+  return generatedPassword.slice(0, passwordLength);
 }
+
 
 
 
